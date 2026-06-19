@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prévia do App TV Stream</title>
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-bar">
+      <span class="app-title">TV Stream App</span>
+      <span class="app-subtitle">Visualização do fluxo principal</span>
+    </header>
+
+    <main>
+      <section class="screen screen-login active" id="screen-login">
+        <div class="card" id="loginCard">
+          <h1>Entrar</h1>
+          <p class="caption">Acesse a lista de canais com uma conta de demonstração.</p>
+          <label>Email</label>
+          <input type="email" value="usuario@exemplo.com">
+          <label>Senha</label>
+          <input type="password" value="********">
+          <button id="loginBtn">Entrar</button>
+          <div class="form-footer">
+            <span>Não tem conta?</span>
+            <button class="linkBtn" id="showRegisterBtn">Cadastre-se</button>
+          </div>
+        </div>
+
+        <div class="card" id="registerCard" style="display:none;">
+          <h1>Cadastro</h1>
+          <p class="caption">Crie sua conta para acessar os canais.</p>
+          <label>Nome</label>
+          <input type="text" value="Seu nome">
+          <label>Email</label>
+          <input type="email" value="usuario@exemplo.com">
+          <label>Senha</label>
+          <input type="password" value="********">
+          <label>Confirmar senha</label>
+          <input type="password" value="********">
+          <button id="registerBtn">Cadastrar</button>
+          <div class="form-footer">
+            <span>Já tem conta?</span>
+            <button class="linkBtn" id="showLoginBtn">Entrar</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen screen-channels" id="screen-channels">
+        <div class="screen-header">
+          <div>
+            <h1>Canais</h1>
+            <p>Escolha um canal para abrir o player.</p>
+          </div>
+        </div>
+
+        <div class="channel-list">
+          <article class="channel-card">
+            <div class="channel-thumb" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80');"></div>
+            <div class="channel-info">
+              <h2>Canal Teste 1</h2>
+              <p>Conteúdo ao vivo com programação variada.</p>
+              <span class="price">R$ 9,99 / mês</span>
+              <button class="watchBtn" data-channel="1">Assistir</button>
+            </div>
+          </article>
+          <article class="channel-card">
+            <div class="channel-thumb" style="background-image:url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=400&q=80');"></div>
+            <div class="channel-info">
+              <h2>Canal Teste 2</h2>
+              <p>Filmes e séries exclusivas em streaming.</p>
+              <span class="price">R$ 9,99 / mês</span>
+              <button class="watchBtn" data-channel="2">Assistir</button>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen screen-player" id="screen-player">
+        <div class="player-header">
+          <button class="backBtn" id="backFromPlayer">← Voltar</button>
+          <div>
+            <h1>Reproduzindo Canal</h1>
+            <p id="playerChannelLabel">Canal Teste 1</p>
+          </div>
+        </div>
+        <div class="player-box">
+          <div class="player-screen">Player ExoPlayer</div>
+          <div class="player-info">
+            <p>URL de stream:</p>
+            <p class="stream-url">https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const loginBtn = document.getElementById('loginBtn');
+    const watchBtns = document.querySelectorAll('.watchBtn');
+    const backFromPlayer = document.getElementById('backFromPlayer');
+    const screenLogin = document.getElementById('screen-login');
+    const screenChannels = document.getElementById('screen-channels');
+    const screenPlayer = document.getElementById('screen-player');
+    const playerChannelLabel = document.getElementById('playerChannelLabel');
+
+    const showScreen = (target) => {
+      [screenLogin, screenChannels, screenPlayer].forEach((screen) => {
+        screen.classList.toggle('active', screen.id === target);
+      });
+    };
+
+    loginBtn.addEventListener('click', () => showScreen('screen-channels'));
+
+    watchBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playerChannelLabel.textContent = btn.dataset.channel === '1' ? 'Canal Teste 1' : 'Canal Teste 2';
+        showScreen('screen-player');
+      });
+    });
+
+    const loginCard = document.getElementById('loginCard');
+    const registerCard = document.getElementById('registerCard');
+    const showRegisterBtn = document.getElementById('showRegisterBtn');
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+
+    const showScreen = (target) => {
+      [screenLogin, screenChannels, screenPlayer].forEach((screen) => {
+        screen.classList.toggle('active', screen.id === target);
+      });
+    };
+
+    const showLoginForm = () => {
+      loginCard.style.display = 'grid';
+      registerCard.style.display = 'none';
+    };
+
+    const showRegisterForm = () => {
+      loginCard.style.display = 'none';
+      registerCard.style.display = 'grid';
+    };
+
+    loginBtn.addEventListener('click', () => showScreen('screen-channels'));
+    showRegisterBtn.addEventListener('click', showRegisterForm);
+    showLoginBtn.addEventListener('click', showLoginForm);
+    registerBtn.addEventListener('click', () => showScreen('screen-channels'));
+
+    watchBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playerChannelLabel.textContent = btn.dataset.channel === '1' ? 'Canal Teste 1' : 'Canal Teste 2';
+        showScreen('screen-player');
+      });
+    });
+
+    backFromPlayer.addEventListener('click', () => showScreen('screen-channels'));
+  </script>
+</body>
+</html>
