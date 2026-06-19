@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TV Stream App - Gerador de APK</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 40px 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+    }
+
+    .header p {
+      font-size: 1.1em;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 40px 30px;
+    }
+
+    .section {
+      margin-bottom: 35px;
+    }
+
+    .section-title {
+      font-size: 1.5em;
+      color: #333;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-icon {
+      font-size: 1.3em;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: 0.95em;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="color"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 1em;
+      font-family: inherit;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="number"]:focus,
+    input[type="color"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .info-box {
+      background: #f5f5f5;
+      border-left: 4px solid #667eea;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9em;
+      color: #555;
+      line-height: 1.6;
+    }
+
+    .two-column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .color-picker-group {
+      display: flex;
+      gap: 15px;
+      align-items: flex-end;
+    }
+
+    .color-picker-group input[type="color"] {
+      width: 60px;
+      height: 60px;
+      padding: 5px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .color-picker-group .form-group {
+      margin: 0;
+      flex: 1;
+    }
+
+    .color-picker-group label {
+      margin-bottom: 8px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 15px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 14px 30px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid #e0e0e0;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+    }
+
+    .step-indicator {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .step-indicator::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e0e0e0;
+      z-index: -1;
+    }
+
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #999;
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-number {
+      background: #667eea;
+      border-color: #667eea;
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.85em;
+      color: #999;
+      font-weight: 500;
+    }
+
+    .step.active .step-label {
+      color: #667eea;
+    }
+
+    .requirement-list {
+      list-style: none;
+      margin-top: 15px;
+    }
+
+    .requirement-list li {
+      padding: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      color: #555;
+    }
+
+    .requirement-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #667eea;
+      font-weight: 600;
+      font-size: 1.2em;
+    }
+
+    .success-message {
+      background: #e8f5e9;
+      border: 2px solid #4caf50;
+      color: #2e7d32;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .success-message.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .feature-item {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feature-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    .footer {
+      background: #f9f9f9;
+      padding: 20px 30px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+      color: #999;
+      font-size: 0.9em;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        padding: 30px 20px;
+      }
+
+      .header h1 {
+        font-size: 1.5em;
+      }
+
+      .content {
+        padding: 20px;
+      }
+
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      .btn-primary {
+        min-width: auto;
+      }
+
+      .step-indicator {
+        flex-wrap: wrap;
+      }
+
+      .step-indicator::before {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📱 Gerador de APK</h1>
+      <p>TV Stream App - Crie seu instalador Android personalizado</p>
+    </div>
+
+    <div class="content">
+      <div class="success-message" id="successMessage">
+        ✓ Configuração salva com sucesso! Agora você pode gerar o APK.
+      </div>
+
+      <form id="apkForm">
+        <!-- Passo 1: Informações Básicas -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">📋</span>
+            Informações Básicas do App
+          </h2>
+
+          <div class="two-column">
+            <div class="form-group">
+              <label for="appName">Nome do App</label>
+              <input type="text" id="appName" placeholder="TV Stream App" value="TV Stream App" required>
+              <div class="info-box">Nome que aparecerá na tela inicial do telefone</div>
+            </div>
+
+            <div class="form-group">
+              <label for="packageName">Package Name</label>
+              <input type="text" id="packageName" placeholder="com.tvstream.app" value="com.tvstream.app" required>
+              <div class="info-box">Identificador único (ex: com.empresa.app)</div>
+            </div>
+          </div>
+
+          <div class="two-column">
+            <div class="form-group">
+              <label for="appVersion">Versão (1.0.0)</label>
+              <input type="text" id="appVersion" placeholder="1.0.0" value="1.0.0" required>
+            </div>
+
+            <div class="form-group">
+              <label for="versionCode">Código de Versão</label>
+              <input type="number" id="versionCode" placeholder="1" value="1" min="1" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="appDescription">Descrição do App</label>
+            <textarea id="appDescription" placeholder="Descrição breve do seu app..." rows="3">Seu app de streaming de TV com paywall integrado</textarea>
+          </div>
+        </div>
+
+        <!-- Passo 2: Branding & Cores -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">🎨</span>
+            Personalização Visual
+          </h2>
+
+          <div class="two-column">
+            <div class="form-group">
+              <label for="appAuthor">Desenvolvedor/Empresa</label>
+              <input type="text" id="appAuthor" placeholder="Seu Nome" value="Seu Nome" required>
+            </div>
+
+            <div class="form-group">
+              <label for="appEmail">Email de Suporte</label>
+              <input type="email" id="appEmail" placeholder="contato@app.com" value="contato@app.com" required>
+            </div>
+          </div>
+
+          <div class="color-picker-group">
+            <div class="form-group">
+              <label for="primaryColor">Cor Primária</label>
+              <input type="color" id="primaryColor" value="#667eea" required>
+            </div>
+            <div class="form-group">
+              <label for="secondaryColor">Cor Secundária</label>
+              <input type="color" id="secondaryColor" value="#764ba2" required>
+            </div>
+            <div class="form-group">
+              <label for="accentColor">Cor de Destaque</label>
+              <input type="color" id="accentColor" value="#ff6b6b" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passo 3: Funcionalidades -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">⚙️</span>
+            Funcionalidades a Incluir
+          </h2>
+
+          <div class="feature-grid">
+            <div class="feature-item">
+              <input type="checkbox" id="feature-login" checked>
+              <label for="feature-login" style="margin: 0;">Login/Cadastro</label>
+            </div>
+            <div class="feature-item">
+              <input type="checkbox" id="feature-channels" checked>
+              <label for="feature-channels" style="margin: 0;">Lista de Canais</label>
+            </div>
+            <div class="feature-item">
+              <input type="checkbox" id="feature-player" checked>
+              <label for="feature-player" style="margin: 0;">Player de Vídeo</label>
+            </div>
+            <div class="feature-item">
+              <input type="checkbox" id="feature-paywall" checked>
+              <label for="feature-paywall" style="margin: 0;">Sistema de Paywall</label>
+            </div>
+            <div class="feature-item">
+              <input type="checkbox" id="feature-notifications">
+              <label for="feature-notifications" style="margin: 0;">Notificações</label>
+            </div>
+            <div class="feature-item">
+              <input type="checkbox" id="feature-offline">
+              <label for="feature-offline" style="margin: 0;">Modo Offline</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Passo 4: Requisitos do Sistema -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">📱</span>
+            Requisitos do Sistema
+          </h2>
+
+          <div class="two-column">
+            <div class="form-group">
+              <label for="minSdk">Android Mínimo</label>
+              <select id="minSdk" required>
+                <option value="21">Android 5.0 (API 21)</option>
+                <option value="24" selected>Android 7.0 (API 24)</option>
+                <option value="26">Android 8.0 (API 26)</option>
+                <option value="29">Android 10 (API 29)</option>
+                <option value="31">Android 12 (API 31)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="targetSdk">Android Alvo</label>
+              <select id="targetSdk" required>
+                <option value="31">Android 12 (API 31)</option>
+                <option value="33" selected>Android 13 (API 33)</option>
+                <option value="34">Android 14 (API 34)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="info-box">
+            ✓ Requisitos: 100 MB de espaço livre <br>
+            ✓ Permissões: Internet, Câmera, Mídia
+          </div>
+        </div>
+
+        <!-- Passo 5: Configurações Avançadas -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">🔧</span>
+            Configurações Avançadas
+          </h2>
+
+          <div class="two-column">
+            <div class="form-group">
+              <label for="serverUrl">URL do Servidor Backend</label>
+              <input type="text" id="serverUrl" placeholder="https://api.tvstream.com" value="https://api.tvstream.com">
+            </div>
+
+            <div class="form-group">
+              <label for="appLanguage">Idioma Padrão</label>
+              <select id="appLanguage" required>
+                <option value="pt-BR" selected>Português (Brasil)</option>
+                <option value="en-US">Inglês (EUA)</option>
+                <option value="es-ES">Espanhol</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="appStoreUrl">URL da Play Store (opcional)</label>
+            <input type="text" id="appStoreUrl" placeholder="https://play.google.com/store/apps/details?id=com.app">
+          </div>
+        </div>
+
+        <!-- Resumo e Geração -->
+        <div class="section">
+          <h2 class="section-title">
+            <span class="section-icon">📦</span>
+            Gerar APK
+          </h2>
+
+          <div class="info-box">
+            <strong>Instruções:</strong><br>
+            1. Preencha todos os campos acima<br>
+            2. Clique em "Gerar Arquivo de Configuração"<br>
+            3. Use o arquivo com ferramentas Android (Android Studio, Gradle, ou Apache Cordova)<br>
+            4. A geração do APK pode levar alguns minutos
+          </div>
+
+          <div class="buttons">
+            <button type="button" class="btn-secondary" onclick="resetForm()">Limpar</button>
+            <button type="button" class="btn-primary" onclick="generateConfig()">📥 Gerar Arquivo de Configuração</button>
+            <button type="button" class="btn-primary" onclick="showGuide()">📖 Ver Guia de Instalação</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="footer">
+      <p>💡 Dica: Salve suas configurações antes de gerar o APK. Você pode fazer download de um arquivo de configuração para uso posterior.</p>
+    </div>
+  </div>
+
+  <script>
+    // Salvar configurações localmente
+    function saveConfig() {
+      const config = {
+        appName: document.getElementById('appName').value,
+        packageName: document.getElementById('packageName').value,
+        appVersion: document.getElementById('appVersion').value,
+        versionCode: document.getElementById('versionCode').value,
+        appDescription: document.getElementById('appDescription').value,
+        appAuthor: document.getElementById('appAuthor').value,
+        appEmail: document.getElementById('appEmail').value,
+        primaryColor: document.getElementById('primaryColor').value,
+        secondaryColor: document.getElementById('secondaryColor').value,
+        accentColor: document.getElementById('accentColor').value,
+        minSdk: document.getElementById('minSdk').value,
+        targetSdk: document.getElementById('targetSdk').value,
+        serverUrl: document.getElementById('serverUrl').value,
+        appLanguage: document.getElementById('appLanguage').value,
+        appStoreUrl: document.getElementById('appStoreUrl').value,
+        features: {
+          login: document.getElementById('feature-login').checked,
+          channels: document.getElementById('feature-channels').checked,
+          player: document.getElementById('feature-player').checked,
+          paywall: document.getElementById('feature-paywall').checked,
+          notifications: document.getElementById('feature-notifications').checked,
+          offline: document.getElementById('feature-offline').checked
+        }
+      };
+      localStorage.setItem('apkConfig', JSON.stringify(config));
+    }
+
+    // Carregar configurações salvas
+    function loadConfig() {
+      const saved = localStorage.getItem('apkConfig');
+      if (saved) {
+        const config = JSON.parse(saved);
+        document.getElementById('appName').value = config.appName;
+        document.getElementById('packageName').value = config.packageName;
+        document.getElementById('appVersion').value = config.appVersion;
+        document.getElementById('versionCode').value = config.versionCode;
+        document.getElementById('appDescription').value = config.appDescription;
+        document.getElementById('appAuthor').value = config.appAuthor;
+        document.getElementById('appEmail').value = config.appEmail;
+        document.getElementById('primaryColor').value = config.primaryColor;
+        document.getElementById('secondaryColor').value = config.secondaryColor;
+        document.getElementById('accentColor').value = config.accentColor;
+        document.getElementById('minSdk').value = config.minSdk;
+        document.getElementById('targetSdk').value = config.targetSdk;
+        document.getElementById('serverUrl').value = config.serverUrl;
+        document.getElementById('appLanguage').value = config.appLanguage;
+        document.getElementById('appStoreUrl').value = config.appStoreUrl;
+        
+        if (config.features) {
+          document.getElementById('feature-login').checked = config.features.login;
+          document.getElementById('feature-channels').checked = config.features.channels;
+          document.getElementById('feature-player').checked = config.features.player;
+          document.getElementById('feature-paywall').checked = config.features.paywall;
+          document.getElementById('feature-notifications').checked = config.features.notifications;
+          document.getElementById('feature-offline').checked = config.features.offline;
+        }
+      }
+    }
+
+    function generateConfig() {
+      saveConfig();
+
+      const config = JSON.parse(localStorage.getItem('apkConfig'));
+      const configJson = JSON.stringify(config, null, 2);
+
+      const blob = new Blob([configJson], { type: 'application/json' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${config.packageName}-config.json`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      showSuccess();
+    }
+
+    function resetForm() {
+      if (confirm('Deseja limpar todos os campos?')) {
+        document.getElementById('apkForm').reset();
+        document.getElementById('appName').value = 'TV Stream App';
+        document.getElementById('packageName').value = 'com.tvstream.app';
+        document.getElementById('appVersion').value = '1.0.0';
+        document.getElementById('versionCode').value = '1';
+        localStorage.removeItem('apkConfig');
+      }
+    }
+
+    function showSuccess() {
+      const msg = document.getElementById('successMessage');
+      msg.classList.add('show');
+      setTimeout(() => {
+        msg.classList.remove('show');
+      }, 3000);
+    }
+
+    function showGuide() {
+      const guide = `
+🔧 GUIA DE INSTALAÇÃO - GERAR APK
+
+=== OPÇÃO 1: Android Studio (Recomendado) ===
+1. Abra Android Studio
+2. File → New → Project from Version Control
+3. Cole a URL do repositório GitHub
+4. Edite o build.gradle com as configurações geradas
+5. Build → Build Bundle(s) / APK(s)
+6. Aguarde a compilação
+
+=== OPÇÃO 2: Linha de Comando (Gradle) ===
+1. Clone o repositório
+2. cd para o diretório do projeto
+3. Edite build.gradle com as configurações
+4. Execute: ./gradlew assembleRelease
+5. O APK será gerado em: app/build/outputs/apk/
+
+=== OPÇÃO 3: Apache Cordova ===
+1. Instale Node.js e Cordova: npm install -g cordova
+2. Crie projeto: cordova create tvstream com.tvstream.app "TV Stream"
+3. Adicione plataforma: cordova platform add android
+4. Copie seus arquivos HTML/CSS/JS
+5. Build: cordova build android --release
+
+=== OPÇÃO 4: React Native ===
+1. Instale React Native CLI
+2. npx react-native init TVStream
+3. Instale dependências de streaming
+4. npm run android
+
+=== REQUISITOS ===
+✓ JDK 11 ou superior
+✓ Android SDK (mínimo API 24)
+✓ Gradle 7.0+
+✓ 4GB de RAM (recomendado 8GB)
+
+=== DEPOIS DE GERAR O APK ===
+1. Teste em emulador Android
+2. Assinatura digital (keystore)
+3. Upload para Google Play Store
+4. Configure app signing
+
+Precisa de mais ajuda? Consulte a documentação oficial do Android!
+      `;
+      alert(guide);
+    }
+
+    // Carregar configurações ao abrir a página
+    window.addEventListener('load', loadConfig);
+
+    // Salvar periodicamente
+    setInterval(saveConfig, 30000);
+  </script>
+</body>
+</html>
